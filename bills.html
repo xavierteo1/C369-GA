@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bills</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .navbar {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #c0c0c0;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    .navbar li {
+      display: inline;
+    }
+    .navbar li a {
+      display: block;
+      color: rgb(1, 148, 216);
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .navbar li a:hover {
+      background-color: #474747;
+      color: #fff;
+    }
+    .bills-container {
+      margin: 30px auto;
+      max-width: 600px;
+      text-align: center;
+    }
+    .bills-container h2 {
+      color: #333;
+      margin-bottom: 40px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 50px;
+      margin: 10px 0;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size:xx-large;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .no-bills {
+      font-style: italic;
+      color: #666;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .sign-out-icon {
+      width: 40px;
+      height: 40px;
+      background-image: url('sign-out-icon.svg'); 
+      background-size: cover;
+      position: absolute;
+      right: 20px;
+      top: 5px;
+      cursor: pointer;
+    }
+    .chatbot-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #333;
+      background-image: url('chatbot-icon.png'); 
+      background-size: cover;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .chatbot-icon:hover {
+      transform: scale(1.1);
+    }
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.4); 
+      padding-top: 60px; 
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal-button {
+      background-color: rgb(1, 148, 216);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .modal-button:hover {
+      background-color: #0056b3;
+    }
+    #bill-amount {
+      color:#4194ed;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size:xxx-large;
+    }
+    #payable {
+      font-size:medium;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .no-underline {
+      text-decoration: none;
+      color: inherit; 
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul class="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="transfer.html">Transfer</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="progress.html">Progress</a></li>
+        <li><a href="wallet.html">Wallet</a></li>
+        <li><div class="sign-out-icon" onclick="openModal()"></div></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="bills-container">
+    <h2>Outstanding Bills</h2>
+
+    <a href="https://www.spdigital.sg/spapp/bill-payment" class="no-underline" target="_blank">
+      <div class="card">Electricity Bill <br><span id="bill-amount">$120</span><br><span id="payable">payable</span></div>
+    </a>
+    <a href="https://www.starhub.com/personal/support/article.html?id=EO8NYyuoeCAabLI9pi8mQ6" class="no-underline" target="_blank">
+      <div class="card">Internet Bill <br> <span id="bill-amount">$60</span><br><span id="payable">payable</span></div>
+    </a>
+    <a href="https://www.spgroup.com.sg/our-services/utilities/quick-guide-to-your-utilities-residential" class="no-underline" target="_blank">
+      <div class="card">Water Bill <br><span id="bill-amount">$45</span><br><span id="payable">payable</span></div>
+    </a>
+
+    <div class="no-bills" id="noBillsMessage">No more bills to display</div>
+  </div>
+
+  <a href="chatbot.html">
+    <div class="chatbot-icon"></div>
+  </a>
+
+  <div id="signOutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p>Do you want to sign out?</p>
+      <button class="modal-button" onclick="signOut()">Sign Out</button>
+      <button class="modal-button" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const bills = document.querySelectorAll('.bills-container .card');
+    const noBillsMessage = document.getElementById('noBillsMessage');
+
+    bills.forEach((bill) => {
+      bill.parentElement.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.open(event.currentTarget.href, '_blank'); 
+        bill.style.display = 'none'; 
+        checkNoBills(); 
+      });
+    });
+
+    function checkNoBills() {
+      const visibleBills = document.querySelectorAll('.bills-container .card:not([style*="display: none"])');
+      if (visibleBills.length === 0) {
+        noBillsMessage.style.display = 'block';
+      }
+    }
+
+    function openModal() {
+      document.getElementById('signOutModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('signOutModal').style.display = 'none';
+    }
+
+    function signOut() {
+      window.location.href = 'sign-in.html';
+    }
+  </script>
+</body>
+</html>

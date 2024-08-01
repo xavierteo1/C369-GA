@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #c0c0c0;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    .navbar li {
+      display: inline;
+    }
+    .navbar li a {
+      display: block;
+      color: rgb(1, 148, 216);
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .navbar li a:hover {
+      background-color: #474747;
+      color: #fff;
+    }
+    .sign-out-icon {
+      width: 40px;
+      height: 40px;
+      background-image: url('sign-out-icon.svg'); 
+      background-size: cover;
+      position: absolute;
+      right: 20px;
+      top: 5px;
+      cursor: pointer;
+    }
+    .wallet-container {
+      margin: 20px auto;
+      max-width: 1200px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .card {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card h2, .card h3 {
+      margin: 0;
+      font-size: 1.5em;
+      color: #333;
+    }
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      height: 20px;
+      background-color: #76c7c0;
+      border-radius: 5px;
+    }
+    .balance-section, .transactions-section, .categories-section {
+      margin-bottom: 20px;
+    }
+    .transaction-card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .percentage-more {
+      font-weight: bold;
+      color: #4caf50;
+      margin-top: 5px;
+    }
+    .chatbot-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #333;
+      background-image: url('chatbot-icon.png'); 
+      background-size: cover;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .chatbot-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgb(0,0,0); 
+      background-color: rgba(0,0,0,0.4); 
+      padding-top: 60px; 
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal-button {
+      background-color: rgb(1, 148, 216);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .modal-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul class="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="transfer.html">Transfer</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="progress.html">Progress</a></li>
+        <li><a href="wallet.html">Wallet</a></li>
+        <li><div class="sign-out-icon" onclick="openModal()"></div></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="wallet-container">
+
+    <div class="balance-section">
+      <div class="card">
+        <h2>Total Balance</h2>
+        <p id="total-balance" style="font-size: 2em; margin: 10px 0; font-weight: bold;">$1200</p>
+        <p class="percentage-more" id="percentage-more">10% more than last month</p>
+      </div>
+    </div>
+
+    <div class="transactions-section">
+      <h2>Past Transactions</h2>
+      <div id="transaction-cards">
+        <div class="transaction-card">Transaction #001 - $50</div>
+        <div class="transaction-card">Transaction #002 - $75</div>
+        <div class="transaction-card">Transaction #003 - $30</div>
+      </div>
+    </div>
+
+    <div class="categories-section">
+      <h2>Category Progress</h2>
+      <div class="card">
+        <h3>Rent & Utilities</h3>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 80%;"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Leisure & Shopping</h3>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 60%;"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Food</h3>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 50%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="chatbot.html">
+    <div class="chatbot-icon"></div>
+  </a>
+
+  <div id="signOutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p>Do you want to sign out?</p>
+      <button class="modal-button" onclick="signOut()">Sign Out</button>
+      <button class="modal-button" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+
+    function openModal() {
+      document.getElementById('signOutModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('signOutModal').style.display = 'none';
+    }
+
+    function signOut() {
+      window.location.href = 'sign-in.html';
+    }
+
+
+    const totalBalance = 1200;
+    const percentageMore = 10;
+
+    document.getElementById('total-balance').innerText = `$${totalBalance}`;
+    document.getElementById('percentage-more').innerText = `${percentageMore}% more than last month`;
+  </script>
+</body>
+</html>

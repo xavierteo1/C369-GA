@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .navbar {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #c0c0c0;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    .navbar li {
+      display: inline;
+    }
+    .navbar li a {
+      display: block;
+      color: rgb(1, 148, 216);
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .navbar li a:hover {
+      background-color: #474747;
+      color: #fff;
+    }
+    .sign-out-icon {
+      width: 40px;
+      height: 40px;
+      background-image: url('sign-out-icon.svg'); 
+      background-size: cover;
+      position: absolute;
+      right: 20px;
+      top: 5px;
+      cursor: pointer;
+    }
+    .chart-container {
+      width: 80%;
+      margin: 20px auto;
+    }
+    .title h2 {
+      color: rgb(1, 148, 216);
+      font-size: 80px;
+      text-align: center;
+    }
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgb(0,0,0); 
+      background-color: rgba(0,0,0,0.4); 
+      padding-top: 60px; 
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal-button {
+      background-color: rgb(1, 148, 216);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .modal-button:hover {
+      background-color: #0056b3;
+    }
+    .chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .chatbot-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #333;
+      background-image: url('chatbot-icon.png'); 
+      background-size: cover;
+      cursor: pointer;
+      position: relative;
+    }
+    .chat-window {
+      width: 300px;
+      height: 400px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      background-color: #fff;
+      display: none;
+      flex-direction: column;
+    }
+    .chat-header {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      border-radius: 10px 10px 0 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 0 0 0 10px;
+    }
+    .chat-input button {
+      padding: 10px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 0 0 10px 0;
+      cursor: pointer;
+    }
+    .speech-bubble {
+      max-width: 250px;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 20px;
+      border-width: 10px;
+      border-style: solid;
+      border-color: #f1f1f1 transparent transparent transparent;
+    }
+    .choice-button {
+      background-color: #76c7c0;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px 0;
+      width: 100%;
+      text-align: left;
+    }
+    .intro-bubble {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      max-width: 250px;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 14px;
+      text-align: center;
+    }
+    .intro-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 20px;
+      border-width: 10px;
+      border-style: solid;
+      border-color: #f1f1f1 transparent transparent transparent;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul class="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="transfer.html">Transfer</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="progress.html">Progress</a></li>
+        <li><a href="wallet.html">Wallet</a></li>
+        <li><div class="sign-out-icon" onclick="openModal()"></div></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <div class="title">
+    <h2>DAILY<Br> SUMMARY</h2>
+  </div>
+
+  <div class="chart-container">
+    <h2>Amount Spent on Categories</h2>
+    <canvas id="barChart"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <h2>Amount Spent Over Time</h2>
+    <canvas id="lineChart"></canvas>
+  </div>
+
+  <div class="chatbot-container">
+    <div class="chatbot-icon" onclick="toggleChatWindow()">
+      <div class="intro-bubble">
+        Click here to chat!
+      </div>
+    </div>
+    <div class="chat-window" id="chatWindow">
+      <div class="chat-header">
+        Chatbot
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="speech-bubble">
+          <p>Select an option:</p>
+          <button class="choice-button" onclick="handleChoice('Can you provide a summary of my recent transactions?')">Can you provide a summary of my recent transactions?</button>
+          <button class="choice-button" onclick="handleChoice('Can you suggest ways to save on my electricity bill?')">Can you suggest ways to save on my electricity bill?</button>
+          <button class="choice-button" onclick="handleChoice('What are some strategies to reduce my monthly expenses?')">What are some strategies to reduce my monthly expenses?</button>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="signOutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p>Do you want to sign out?</p>
+      <button class="modal-button" onclick="signOut()">Sign Out</button>
+      <button class="modal-button" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const barChartData = {
+      labels: ['Rent & Utilities', 'Leisure & Shopping', 'Food'],
+      datasets: [{
+        label: 'Amount Spent',
+        data: [500, 300, 200],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+      }]
+    };
+
+    const barChartConfig = {
+      type: 'bar',
+      data: barChartData,
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+
+    const barChart = new Chart(
+      document.getElementById('barChart'),
+      barChartConfig
+    );
+
+    const lineChartData = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [{
+        label: 'Amount Spent',
+        data: [50, 100, 150, 200, 250, 300, 350],
+        borderColor: '#36A2EB',
+        fill: false,
+      }]
+    };
+
+    const lineChartConfig = {
+      type: 'line',
+      data: lineChartData,
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+
+    const lineChart = new Chart(
+      document.getElementById('lineChart'),
+      lineChartConfig
+    );
+
+    function openModal() {
+      document.getElementById('signOutModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('signOutModal').style.display = 'none';
+    }
+
+    function signOut() {
+      window.location.href = 'sign-in.html';
+    }
+
+    function toggleChatWindow() {
+      const chatWindow = document.getElementById('chatWindow');
+      chatWindow.style.display = chatWindow.style.display === 'none' || chatWindow.style.display === '' ? 'flex' : 'none';
+    }
+
+    function handleChoice(choice) {
+      const chatBody = document.getElementById('chatBody');
+      const userMessage = document.createElement('div');
+      userMessage.className = 'speech-bubble';
+      userMessage.textContent = choice;
+      userMessage.style.textAlign = 'right';
+      userMessage.style.marginBottom = '10px';
+      chatBody.appendChild(userMessage);
+
+      let botResponse = '';
+
+      switch (choice) {
+        case 'Can you provide a summary of my recent transactions?':
+          botResponse = 'Sure! Here is a summary of your recent transactions:<br>- Groceries: $150<br>- Entertainment: $75<br>- Utilities: $120';
+          break;
+        case 'Can you suggest ways to save on my electricity bill?':
+          botResponse = 'Here are some tips to save on your electricity bill:<br>- Turn off lights when not in use.<br>- Use energy-efficient appliances.<br>- Reduce heating and cooling usage.';
+          break;
+        case 'What are some strategies to reduce my monthly expenses?':
+          botResponse = 'To reduce your monthly expenses, consider the following strategies:<br>- Create and stick to a budget.<br>- Cut down on non-essential spending.<br>- Find cheaper alternatives for your regular purchases.';
+          break;
+        default:
+          botResponse = 'I\'m not sure how to respond to that. Can you please choose one of the options?';
+      }
+
+      setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'speech-bubble';
+        botMessage.innerHTML = botResponse;
+        botMessage.style.textAlign = 'left';
+        chatBody.appendChild(botMessage);
+      }, 1000);
+    }
+
+    function sendMessage() {
+      const chatInput = document.getElementById('chatInput');
+      const chatBody = document.getElementById('chatBody');
+      const message = chatInput.value;
+
+      if (message.trim() !== '') {
+        const userMessage = document.createElement('div');
+        userMessage.className = 'speech-bubble';
+        userMessage.textContent = message;
+        userMessage.style.textAlign = 'right';
+        chatBody.appendChild(userMessage);
+
+        chatInput.value = '';
+
+        setTimeout(() => {
+          const botMessage = document.createElement('div');
+          botMessage.className = 'speech-bubble';
+          botMessage.textContent = 'I received your message: "' + message + '". How can I assist you further?';
+          botMessage.style.textAlign = 'left';
+          chatBody.appendChild(botMessage);
+        }, 1000);
+      }
+    }
+  </script>
+</body>
+</html>

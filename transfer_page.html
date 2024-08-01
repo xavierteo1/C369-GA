@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+        }
+        .navbar {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #c0c0c0;
+          display: flex;
+          justify-content: center;
+          position: relative;
+        }
+        .navbar li {
+          display: inline;
+        }
+        .navbar li a {
+          display: block;
+          color: rgb(1, 148, 216);
+          text-align: center;
+          padding: 14px 16px;
+          text-decoration: none;
+          transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar li a:hover {
+          background-color: #474747;
+          color: #fff;
+        }
+        .content {
+            margin: 20px;
+        }
+        .transfer-form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: auto;
+        }
+        .transfer-form input, .transfer-form button {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .transfer-form button {
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+        .transfer-form button:hover {
+            background-color: #555;
+        }
+        .sign-out-icon {
+            width: 40px;
+            height: 40px;
+            background-image: url('sign-out-icon.svg'); 
+            background-size: cover;
+            position: absolute;
+            right: 20px;
+            top: 5px;
+            cursor: pointer;
+        }
+        .chatbot-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #333;
+            background-image: url('chatbot-icon.png');
+            background-size: cover;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-button {
+            background-color: rgb(1, 148, 216);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .modal-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <ul class="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="transfer.html">Transfer</a></li>
+                <li><a href="bills.html">Bills</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="wallet.html">Wallet</a></li>
+                <li><div class="sign-out-icon" onclick="openModal()"></div></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        <h2>Transfer Page</h2>
+        <div class="transfer-form">
+            <label for="recipient">Recipient:</label>
+            <input type="text" id="recipient" name="recipient" readonly>
+            
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" placeholder="Enter amount">
+            
+            <button onclick="sendMoney()">Send Money</button>
+            <button onclick="requestMoney()">Request Money</button>
+        </div>
+    </div>
+
+    <div class="chatbot-icon" onclick="location.href='chatbot.html'"></div>
+
+    <div id="signOutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Do you want to sign out?</p>
+            <button class="modal-button" onclick="signOut()">Sign Out</button>
+            <button class="modal-button" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                name: params.get('name')
+            };
+        }
+
+        function populateRecipient() {
+            const { name } = getQueryParams();
+            document.getElementById('recipient').value = name || 'Unknown';
+        }
+
+        function sendMoney() {
+            const recipient = document.getElementById('recipient').value;
+            const amount = document.getElementById('amount').value;
+            if (amount) {
+                alert(`You have sent $${amount} to ${recipient}.`);
+            } else {
+                alert('Please enter an amount.');
+            }
+        }
+
+        function requestMoney() {
+            const recipient = document.getElementById('recipient').value;
+            const amount = document.getElementById('amount').value;
+            if (amount) {
+                alert(`You have requested $${amount} from ${recipient}.`);
+            } else {
+                alert('Please enter an amount.');
+            }
+        }
+
+        function openModal() {
+            document.getElementById('signOutModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('signOutModal').style.display = 'none';
+        }
+
+        function signOut() {
+            window.location.href = 'sign-in.html';
+        }
+
+        window.onload = populateRecipient;
+    </script>
+</body>
+</html>
